@@ -1,0 +1,145 @@
+﻿@page "/bookstore"
+@using Library.Services
+@using Library.Components
+@using Library.Data
+@using Microsoft.EntityFrameworkCore
+@using System.Linq
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject MyDbContext DbContext
+
+<div class="sort-container">
+    <img src="..\\Covers\\Korova Books Plus.png" @onclick="GoToHome" />
+    <input placeholder="Search" @bind="searchTerm" />
+    <button @onclick="ApplySearch">Search</button>
+    <button class="@(isFilteredAvailable ? "green-available" : "")" @onclick="ToggleFilterAvailableBooks">Available</button>
+    <button class="@(isSortedAlphabetically ? "green-available" : "")" @onclick="ToggleSortAlphabetically">ABC</button>
+    <button class="@(isSortedPageLength ? "green-available" : "")" @onclick="ToggleSortPageLength">Page Count</button>
+    <input placeholder="Filter by Year" @bind="inputYear" />
+    <button @onclick="ApplyYearFilter">Filter By Year</button>
+</div>
+<div class="key-container">
+    <div class="key">
+        <h1>Available</h1>
+        <div class="availability green-available"></div>
+    </div>
+    <div class="key">
+        <h1>Checked Out</h1>
+        <div class="availability pink-available"></div>
+    </div>
+</div>
+<div class="book-container">
+    @foreach (var book in books)
+    {
+        <Book Id="@book.Id"
+              Cover="@book.Cover"
+              Color="@book.Color"
+              Title="@book.Title"
+              Author="@book.Author"
+              Pages="@book.Pages"
+              Genre="@book.Genre"
+              Year="@book.Year"
+              Availability="@book.Availability">
+              OnAvailabilityToggled="HandleAvailabilityToggle">
+        </Book>
+    }
+</div>
+
+@code {
+    private List<Books> books = new List<Books>();
+    private bool isSortedAlphabetically = false;
+    private bool isSortedPageLength = false;
+    private bool isFilteredAvailable = false;
+    private string searchTerm = string.Empty;
+    private int? inputYear;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadBooks();
+    }
+
+    private async Task LoadBooks()
+    {
+        var allBooks = await DbContext.Books.ToListAsync();
+
+        if (isFilteredAvailable)
+        {
+            allBooks = allBooks.Where(b => b.Availability).ToList();
+        }
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            allBooks = allBooks.Where(b => b.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                           b.Author.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                           b.Genre.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        if (isSortedAlphabetically)
+        {
+            allBooks = allBooks.OrderBy(b => b.Title).ToList();
+        }
+
+        if (isSortedPageLength)
+        {
+            allBooks = allBooks.OrderBy(b => b.Pages).ToList();
+        }
+
+        if (inputYear.HasValue)
+        {
+            allBooks = allBooks.Where(b => b.Year > inputYear.Value).ToList();
+        }
+
+        books = allBooks;
+    }
+
+    private async void HandleAvailabilityToggle(bool newAvailability)
+    {
+        await LoadBooks();
+        StateHasChanged();
+    }
+
+    private async void ApplySearch()
+    {
+        await LoadBooks();
+        StateHasChanged();
+    }
+
+    private async void ToggleSortAlphabetically()
+    {
+        isSortedAlphabetically = !isSortedAlphabetically;
+        await LoadBooks();
+        StateHasChanged();
+    }
+
+    private async void ToggleSortPageLength()
+    {
+        isSortedPageLength = !isSortedPageLength;
+        await LoadBooks();
+        StateHasChanged();
+    }
+
+    private async void ToggleFilterAvailableBooks()
+    {
+        isFilteredAvailable = !isFilteredAvailable;
+        await LoadBooks();
+        StateHasChanged();
+    }
+
+    private async void ApplyYearFilter()
+    {
+        if (inputYear.HasValue && inputYear.Value <= 0)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Please enter a year greater than 0.");
+            return;
+        }
+
+        await LoadBooks();
+        StateHasChanged();
+    }
+
+    private void GoToHome()
+    {
+        NavigationManager.NavigateTo("/media");
+    }
+
+}

@@ -1,0 +1,160 @@
+﻿:root {
+    --white: 255, 255, 255;
+    --black: 0, 0, 0;
+    --dark: 54, 52, 50;
+    --grey: 144, 161, 157;
+    --blue: 50, 130, 184;
+    --green: 137, 217, 157;
+    --pink: 252, 108, 106;
+    --yellow: 242, 224, 136;
+    --purple: 164, 147, 245;
+    --red: 242, 25, 5;
+    --orange: 242, 86, 29;
+}
+
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    height: 100%;
+    width: 100%;
+    background-color: #1A1A1A;
+}
+
+h1 {
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    margin-bottom: 0;
+}
+
+.sort-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+    .sort-container > h1 {
+        font-size: 32px;
+        font-family: 'Synthemesc';
+    }
+
+    .sort-container > img {
+        height: 3rem;
+    }
+
+.key-container {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.key {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: center;
+    align-content: center;
+}
+
+input {
+    display: flex;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: rgba(var(--white), 1);
+    background-color: rgba(var(--white), 0.05);
+    border-radius: 1rem;
+    border: none;
+    padding: 1rem;
+    border: 3px solid transparent;
+}
+
+input:focus {
+    outline: none;
+    border: 3px solid rgba(var(--green), 1);
+}
+
+button {
+    display: flex;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: rgba(var(--white), 1);
+    background-color: rgba(var(--white), 0.05);
+    border-radius: 1rem;
+    border: none;
+    padding: 1rem;
+    border: 3px solid transparent;
+}
+
+    button:hover {
+        opacity: 0.75;
+    }
+
+.book-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    padding: 1.5rem;
+    justify-content: center;
+}
+
+.media-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.availability {
+    display: flex;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 1rem;
+}
+
+.yellow {
+    background-color: rgba(var(--yellow), 0.20);
+}
+
+.orange {
+    background-color: rgba(var(--orange), 0.20);
+}
+
+.blue {
+    background-color: rgba(var(--blue), 0.20);
+}
+
+.red {
+    background-color: rgba(var(--red), 0.20);
+}
+
+.green {
+    background-color: rgba(var(--green), 0.20);
+}
+
+.purple {
+    background-color: rgba(var(--purple), 0.20);
+}
+
+.pink {
+    background-color: rgba(var(--pink), 0.20);
+}
+
+.white {
+    background-color: rgba(var(--white), 0.20);
+}
+
+.pink-available {
+    background-color: rgba(var(--pink), 0.75);
+}
+
+.green-available {
+    background-color: rgba(var(--green), 0.75);
+}

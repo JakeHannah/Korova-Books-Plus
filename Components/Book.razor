@@ -1,0 +1,57 @@
+﻿@using Library.Services
+@using Library.Data
+@inject MyDbContext DbContext
+
+<div class="book @Color">
+    <img src="@(!string.IsNullOrEmpty(Cover) ? $"..\\Covers\\{Cover}" : "..\\Covers\\default.png")" />
+    <div class="title-author">
+        <div class="book-author"> @Year | @Genre | @Pages Pages</div>
+        <div class="book-row">
+            <div class="book-title">@Title</div>
+            <div class="availability @GetAvailabilityColor()-available"></div>
+        </div>
+        <div class="book-author">@Author</div>
+    </div>
+    <div class="book-overlay" @onclick="ToggleAvailability">
+        <h1>@(Availability ? "Check Out" : "Return")</h1>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int Id { get; set; }
+    [Parameter] public string? Color { get; set; }
+    [Parameter] public string? Cover { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Author { get; set; }
+    [Parameter] public int Year { get; set; }
+    [Parameter] public int Pages { get; set; }
+    [Parameter] public string? Genre { get; set; }
+    [Parameter] public bool Availability { get; set; }
+    [Parameter] public EventCallback<bool> OnAvailabilityToggled { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private async Task ToggleAvailability()
+    {
+        var bookToUpdate = await DbContext.Books.FindAsync(Id);
+        if (bookToUpdate != null)
+        {
+            bookToUpdate.Availability = !bookToUpdate.Availability;
+            DbContext.Books.Update(bookToUpdate);
+            await DbContext.SaveChangesAsync();
+
+            Availability = bookToUpdate.Availability;
+        }
+
+        await DbContext.SaveChangesAsync();
+
+        Availability = bookToUpdate.Availability;
+
+        await OnAvailabilityToggled.InvokeAsync(Availability);
+    }
+
+
+    private string GetAvailabilityColor()
+    {
+        return Availability ? "green" : "pink";
+    }
+}

@@ -1,0 +1,178 @@
+﻿@page "/media"
+@using Library.Services
+@using Library.Components
+@using Library.Data
+@using Microsoft.EntityFrameworkCore
+@using System.Linq
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject MyDbContext DbContext
+
+<div class="sort-container">
+    <img src="..\\Covers\\Korova Books Plus.png" @onclick="GoToHome" />
+    <input placeholder="Search" @bind="searchTerm" />
+    <button @onclick="ApplySearch">Search</button>
+    <button class="@(isSortedAlphabetically ? "green-available" : "")" @onclick="ToggleSortAlphabetically">ABC</button>
+    <button class="@(isSortedDuration ? "green-available" : "")" @onclick="ToggleSortPageLength">Duration</button>
+    <input placeholder="Filter by Year" @bind="inputYear" />
+    <button @onclick="ApplyYearFilter">Filter By Year</button>
+</div>
+
+<div class="media-row">
+    <div class="media-container">
+        <h1>Songs</h1>
+        @foreach (var song in songs)
+        {
+                <Song Id="@song.Id"
+                      Title="@song.Title"
+                      Album="@song.Album"
+                      Artist="@song.Artist"
+                      Year="@song.Year"
+                      Rating="@song.Rating"
+                      Duration="@song.Duration"
+                      Cover="@song.Cover" />
+        }
+    </div>
+    <div class="media-container">
+        <h1>Podcasts</h1>
+        @foreach (var podcast in podcasts)
+        {
+            <Podcast Title="@podcast.Title"
+                  Author="@podcast.Author"
+                  Year="@podcast.Year"
+                  Rating="@podcast.Rating"
+                  Duration="@podcast.Duration"
+                  Cover="@podcast.Cover" />
+        }
+    </div>
+    <div class="media-container">
+        <h1>Audiobooks</h1>
+        @foreach (var audiobook in audiobooks)
+        {
+            <Audiobook Title="@audiobook.Title"
+                       Author="@audiobook.Author"
+                       Year="@audiobook.Year"
+                       Rating="@audiobook.Rating"
+                       Duration="@audiobook.Duration"
+                       Cover="@audiobook.Cover" />
+        }
+    </div>
+
+
+
+</div>
+
+
+@code {
+    private List<Songs> songs = new List<Songs>();
+    private List<Podcasts> podcasts = new List<Podcasts>();
+    private List<Audiobooks> audiobooks = new List<Audiobooks>();
+    private bool isSortedAlphabetically = false;
+    private bool isSortedDuration = false;
+    private bool isFilteredAvailable = false;
+    private string searchTerm = string.Empty;
+    private int? inputYear;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMedia();
+    }
+
+
+    private async Task LoadMedia()
+    {
+        var allSongs = await DbContext.Songs.ToListAsync();
+        var allPodcasts = await DbContext.Podcasts.ToListAsync();
+        var allAudiobooks = await DbContext.Audiobooks.ToListAsync();
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            allSongs = allSongs.Where(b => b.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                           b.Artist.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                           b.Album.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            allPodcasts = allPodcasts.Where(b => b.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                           b.Author.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            allAudiobooks = allAudiobooks.Where(b => b.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                                           b.Author.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+
+        }
+
+        if (isSortedAlphabetically)
+        {
+            allSongs = allSongs.OrderBy(b => b.Title).ToList();
+            allPodcasts = allPodcasts.OrderBy(b => b.Title).ToList();
+            allAudiobooks = allAudiobooks.OrderBy(b => b.Title).ToList();
+        }
+
+        if (isSortedDuration)
+        {
+            allSongs = allSongs.OrderBy(b => b.Duration).ToList();
+            allPodcasts = allPodcasts.OrderBy(b => b.Duration).ToList();
+            allAudiobooks = allAudiobooks.OrderBy(b => b.Duration).ToList();
+        }
+
+        if (inputYear.HasValue)
+        {
+            allSongs = allSongs.Where(b => b.Year > inputYear.Value).ToList();
+            allPodcasts = allPodcasts.Where(b => b.Year > inputYear.Value).ToList();
+            allAudiobooks = allAudiobooks.Where(b => b.Year > inputYear.Value).ToList();
+        }
+
+        songs = allSongs;
+        podcasts = allPodcasts;
+        audiobooks = allAudiobooks;
+    }
+
+    private async void HandleAvailabilityToggle(bool newAvailability)
+    {
+        await LoadMedia();
+        StateHasChanged();
+    }
+
+    private async void ApplySearch()
+    {
+        await LoadMedia();
+        StateHasChanged();
+    }
+
+    private async void ToggleSortAlphabetically()
+    {
+        isSortedAlphabetically = !isSortedAlphabetically;
+        await LoadMedia();
+        StateHasChanged();
+    }
+
+    private async void ToggleSortPageLength()
+    {
+        isSortedDuration = !isSortedDuration;
+        await LoadMedia();
+        StateHasChanged();
+    }
+
+    private async void ToggleFilterAvailableBooks()
+    {
+        isFilteredAvailable = !isFilteredAvailable;
+        await LoadMedia();
+        StateHasChanged();
+    }
+
+    private async void ApplyYearFilter()
+    {
+        if (inputYear.HasValue && inputYear.Value <= 0)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", "Please enter a year greater than 0.");
+            return;
+        }
+
+        await LoadMedia();
+        StateHasChanged();
+    }
+
+    private void GoToHome()
+    {
+        NavigationManager.NavigateTo("/media");
+    }
+
+}

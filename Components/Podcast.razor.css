@@ -1,0 +1,119 @@
+﻿.song {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem;
+    height: fit-content;
+    width: 600px;
+    background-color: rgba(var(--white), 0.05);
+    border-radius: 1rem;
+}
+
+    .song:hover {
+        background-color: rgba(var(--white), 0.10)
+    }
+
+.song-row > img {
+    border: 0.25rem solid rgba(var(--black), 0.15);
+    width: 100px;
+    height: 100px;
+}
+
+
+.song-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+.song-row {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.rating > img {
+    height: 50px;
+    opacity: 1;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: bold;
+    color: white;
+    text-overflow: ellipsis;
+}
+
+.artist {
+    font-size: 16px;
+    font-weight: bold;
+    color: rgba(var(--white), 0.5);
+}
+
+.duration {
+    font-size: 18px;
+    font-weight: bold;
+    color: rgba(var(--white), 0.5);
+}
+
+.artist {
+    font-size: 16px;
+    font-weight: bold;
+    color: rgba(var(--white), 0.5);
+}
+
+.album {
+    font-size: 16px;
+    font-weight: bold;
+    color: rgba(var(--white), 1);
+}
+
+.rating {
+    font-size: 50px;
+    font-weight: bold;
+    color: rgba(var(--green), 0.75);
+}
+
+.out-of {
+    font-size: 30px;
+    font-weight: bold;
+    color: rgba(var(--white), 1);
+}
+
+.yellow {
+    background-color: rgba(var(--yellow), 0.20);
+}
+
+.orange {
+    background-color: rgba(var(--orange), 0.20);
+}
+
+.blue {
+    background-color: rgba(var(--blue), 0.20);
+}
+
+.red {
+    background-color: rgba(var(--red), 0.20);
+}
+
+.green {
+    background-color: rgba(var(--green), 0.20);
+}
+
+.purple {
+    background-color: rgba(var(--purple), 0.20);
+}
+
+.pink {
+    background-color: rgba(var(--pink), 0.20);
+}
+
+.white {
+    background-color: rgba(var(--white), 0.20);
+}

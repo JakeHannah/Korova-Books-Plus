@@ -1,0 +1,22 @@
+﻿@page "/"
+@inject NavigationManager NavigationManager
+
+<div class="home-container">
+    <img src="..\\Covers\\Korova Books Plus.png" />
+    <div class="home-row">
+        <button @onclick="GoToBookStore">Book Store</button>
+        <button @onclick="GoToMedia">Media</button>
+    </div>
+</div>
+
+@code {
+    private void GoToBookStore()
+    {
+        NavigationManager.NavigateTo("/bookstore");
+    }
+
+    private void GoToMedia()
+    {
+        NavigationManager.NavigateTo("/media");
+    }
+}

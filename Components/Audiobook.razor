@@ -1,0 +1,32 @@
+﻿@using Library.Services
+@using Library.Data
+@inject MyDbContext DbContext
+
+<div class="song">
+    <div class="song-row">
+        <img src="..\\Covers\\@Cover" />
+        <div class="song-column">
+            <div class="song-row">
+                <div class="title">@Title</div>
+                <div class="duration">(@Year)</div>
+            </div>
+            
+            <div class="artist">@Author</div>
+            <div class="album">@Duration</div>
+        </div>
+    </div>
+    <div class="song-row">
+        <div class="rating">@Rating</div>
+        <div class="artist"> of </div>
+        <div class="out-of">5</div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Author { get; set; }
+    [Parameter] public int Year { get; set; }
+    [Parameter] public int Rating { get; set; }
+    [Parameter] public string? Duration { get; set; }
+    [Parameter] public string? Cover { get; set; }
+}

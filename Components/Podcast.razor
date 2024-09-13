@@ -1,0 +1,45 @@
+﻿@using Library.Services
+@using Library.Data
+@inject MyDbContext DbContext
+
+<div class="song">
+    <div class="song-row">
+        <img src="..\\Podcasts\\@Cover" />
+        <div class="song-column">
+            <div class="song-row">
+                <div class="title">@Title</div>
+                <div class="duration">@Duration</div>
+            </div>
+            <div class="artist">@Author</div>
+            <div class="album">@Year</div>
+        </div>
+    </div>
+    <div class="song-row">
+        @if (GetRatingImage() != null)
+        {
+            <div class="rating"><img src="@GetRatingImage()" /></div>
+        }
+        else
+        {
+            <div class="rating"></div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Author { get; set; }
+    [Parameter] public int Year { get; set; }
+    [Parameter] public byte Rating { get; set; }
+    [Parameter] public string? Duration { get; set; }
+    [Parameter] public string? Cover { get; set; }
+
+    private string? GetRatingImage()
+    {
+        if (Rating == 1)
+        {
+            return "..\\Covers\\thumb-up.png"; // Replace with the actual path to your image
+        }
+        return null;
+    }
+}
